@@ -1,0 +1,57 @@
+environment:
+  stateBackend: filesystem
+
+sources:
+  mainInput:
+    broker: localhost:9092
+    topic: myTopic
+    group_id: 1234
+    name: main_input
+    unique_id: d168ffaa-3524-11ed-a261-0242ac120002
+
+kafka_sinks:
+  mainOutput:
+    broker: localhost:9092
+    topic: newTopic
+    group_id: 1233
+    name: main_output
+    unique_id: d168ffbb-3524-11ed-a261-0242ac120002
+
+state_store:
+  type: dynamo
+  enableMultiDb: false
+  dynamo:
+    store_group:
+      name: main_store
+      priority: 0
+    table: harish-table
+  aerospike:
+    store_group:
+      name: main_store
+      priority: 1
+    namespace: test
+    set: test_set
+    hosts:
+      - { host: localhost, port: 3000 }
+    properties:
+      enable-send-key: true
+      writePolicy.socketTimeout: 1000
+      readPolicy.socketTimeout: 1000
+      writePolicy.timeout: 1000
+      readPolicy.timeout: 1000
+      throwExceptionOnWriteError: false
+      throwExceptionOnReadError: false
+      debug-aerospike-enabled-write: true
+      debug-aerospike-enabled-read: true
+
+ttl:
+  main-processor-state-ttl:
+    ttl: 100
+
+miscellaneous_properties:
+#  console-debug-sink-enabled: true
+#  delay-trigger-debug-on-timer: true
+#  debug-print-on-received-event: true
+#  delay-sec: 5
+#  retry-count: 3
+  key-path: data.id
